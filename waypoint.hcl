@@ -1,4 +1,4 @@
-project = "nginx-debian"
+project = "nginx"
 
 runner {
   enabled = true
@@ -11,29 +11,12 @@ runner {
 
 app "web" {
   build {
-    use "docker"{}
-    registry {
-      use "docker" {
-        image = var.image
-        tag = var.tag
-        local = true
-        encoded_auth = filebase64("/home/eduardo/opt/waypoint/meetup-20-06-2023/nomad/nginx/dockerAuth.json")
-      }
+    use "docker" {
     }
   }
 
   deploy {
-    use "docker" {
+    use "nomad" {
     }
   }
-}
-
-variable "tag" {
-  default     = "latest"
-  type        = string
-}
-
-variable "image" {
-  default     = "nginx"
-  type        = string
 }
