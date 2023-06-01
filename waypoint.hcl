@@ -1,22 +1,37 @@
-project = "nginx"
+project = "webapp"
 
-runner {
-  enabled = true
-
-  data_source "git" {
-    url  = "https://github.com/eduardosramos/nginx.git"
-    path = ""
+app "webapp" {
+  labels = {
+    "service" = "webapp"
+    "env" = "dev"
   }
-}
 
-app "web" {
   build {
-    use "docker" {
+    use "docker"{}
+    registry {
+      use "docker" {
+        image = var.image
+        tag = var.tag
+        local = true
+        encoded_auth = filebase64("/home/eduardo/opt/waypoint/nomad/petclinic/dockerAuth.json")
+      }
     }
   }
 
   deploy {
     use "nomad" {
+      datacenter = "dc1"
+      service_port = 80
     }
   }
+}
+
+variable "tag" {
+  default     = "latest"
+  type        = string
+}
+
+variable "image" {
+  default     = "nginx"
+  type        = string
 }
