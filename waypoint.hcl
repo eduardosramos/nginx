@@ -1,37 +1,20 @@
-project = "webapp"
+project = "hashitalk"
 
-app "webapp" {
-  labels = {
-    "service" = "webapp"
-    "env" = "dev"
-  }
+app "hashitalk" {
 
   build {
-    use "docker"{}
-    registry {
-      use "docker" {
-        image = var.image
-        tag = var.tag
-        local = true
-        encoded_auth = filebase64("/home/eduardo/opt/waypoint/nomad/petclinic/dockerAuth.json")
+    use "pack" {}
+      registry {
+        use "docker"{
+          image = "ttl.sh/izaakcorp-demoapp"
+          tag   = "1h"
+        }
       }
     }
-  }
-
-  deploy {
-    use "nomad" {
-      datacenter = "dc1"
-      service_port = 80
+    
+    deploy {
+      use "nomad" {
+        memory = "512"
     }
   }
-}
-
-variable "tag" {
-  default     = "latest"
-  type        = string
-}
-
-variable "image" {
-  default     = "nginx"
-  type        = string
 }
